@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Surfaces */
+  --color-canvas: #fafaf9;
+  --color-surface: #ffffff;
+  --color-sunken: #f5f5f4;
+  --color-line: #e7e5e4;
+  --color-line-strong: #d6d3d1;
+
+  /* Text */
+  --color-ink: #0c0a09;
+  --color-ink-2: #44403c;
+  --color-ink-3: #78716c;
+  --color-ink-4: #a8a29e;
+
+  /* The one accent: deep teal */
+  --color-accent: #0f766e;
+  --color-accent-hover: #115e59;
+  --color-accent-soft: #f0fdfa;
+  --color-accent-muted: #ccfbf1;
+  --color-accent-line: #99f6e4;
+
+  /* Provider identity (used sparingly) */
+  --color-gmail: #ea4335;
+  --color-drive: #1fa463;
+  --color-drive-yellow: #ffba00;
+  --color-calendar: #4285f4;
+  --color-notion: #111111;
+  --color-web: #57534e;
+
+  --radius-card: 12px;
+
+  --shadow-card: 0 1px 2px 0 rgb(12 10 9 / 0.04), 0 1px 3px 0 rgb(12 10 9 / 0.03);
+  --shadow-raised: 0 1px 2px 0 rgb(12 10 9 / 0.05), 0 8px 24px -6px rgb(12 10 9 / 0.1);
+  --shadow-overlay: 0 24px 64px -12px rgb(12 10 9 / 0.22), 0 2px 6px rgb(12 10 9 / 0.06);
+
+  --animate-dash: dash 1.1s linear infinite;
+  --animate-soft-ping: soft-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -16;
+    }
+  }
+  @keyframes soft-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    80%,
+    100% {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background: var(--color-accent-muted);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(12 10 9 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(12 10 9 / 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
