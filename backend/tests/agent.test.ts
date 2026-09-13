@@ -124,11 +124,13 @@ describe("tracker deduplication", () => {
   it("reuses the existing application when the same job is analyzed again, even if Notion is down", async () => {
     const orch = new AgentOrchestrator({ store, getProviders });
     const first = await startDemo(orch);
+    await store.applications.upsert({ ...(await store.applications.get(first.userId, first.applicationId!))!, status: "Applied" });
     const second = await startDemo(orch, { jobUrl: DEMO_JOB_URL, options: { simulateFailures: ["notion", "google_drive"] } });
     expect(second.applicationId).toBe(first.applicationId);
     const apps = (await store.applications.list(first.userId)).filter((a) => a.company === "Example AI");
     expect(apps).toHaveLength(1);
     expect(apps[0]!.matchScore).toBe(86); // not wiped by the run that had no resume
+    expect(apps[0]!.status).toBe("Applied"); // not downgraded back to "Preparing"
     expect(second.workflow.warnings.filter((w) => /Notion/.test(w)).length).toBeLessThanOrEqual(2);
   });
 });

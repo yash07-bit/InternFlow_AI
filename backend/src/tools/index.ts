@@ -315,12 +315,16 @@ export const TOOLS: ToolDef[] = [
     async execute(input, ctx) {
       const w = ctx.run.workflow;
       const job = need(w.job, "Analyze the job first");
+      // Re-analyzing a job must not downgrade an application that already moved on (e.g. "Applied").
+      const existing = ctx.run.applicationId
+        ? await ctx.store.applications.get(ctx.run.userId, ctx.run.applicationId)
+        : await ctx.store.applications.findByJob(ctx.run.userId, { jobUrl: job.url, company: job.company, role: job.title });
       const notes = input.notes ?? (w.resume ? `Match ${w.match?.score ?? "–"}%. Gaps: ${w.match?.gaps.join(", ") || "none"}.` : "Resume not found — add a resume to compute a match.");
       const fields = {
         company: job.company,
         role: job.title,
         jobUrl: job.url,
-        status: input.status ?? ("Preparing" as const),
+        status: input.status ?? existing?.status ?? ("Preparing" as const),
         matchScore: w.match?.score,
         deadline: job.deadline,
         requirements: [...job.requirements, ...job.preferred],
