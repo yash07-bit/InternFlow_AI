@@ -12,11 +12,13 @@ An AI agent that turns an internship posting into a finished application workflo
 ![Express](https://img.shields.io/badge/Express_5-000000?logo=express&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude-tool_calling-D97757)
-![Tests](https://img.shields.io/badge/tests-10_passing-059669)
+![Tests](https://img.shields.io/badge/tests-11_passing-059669)
 
-<img src="docs/screenshots/workflow-complete.png" alt="InternFlow AI — completed agent run coordinating five apps" width="900" />
+<a href="https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing" title="Watch the InternFlow AI walkthrough on Google Drive">
+  <img src="docs/video/walkthrough-thumbnail.png" alt="Play the 2-minute InternFlow AI walkthrough video" width="900" />
+</a>
 
-**[▶ Watch the 2-minute walkthrough video](docs/video/InternFlow-AI-walkthrough.mp4)**
+**[▶ Watch the 2-minute walkthrough on Google Drive](https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing)** · [Download the MP4](docs/video/InternFlow-AI-walkthrough.mp4)
 
 </div>
 
@@ -36,6 +38,7 @@ Built for the **Multi-App AI Agent Hackathon**, which requires a multi-step AI a
 
 ## Contents
 
+- [Walkthrough video](#walkthrough-video)
 - [Screenshots](#screenshots)
 - [Quick start](#quick-start)
 - [Demo script for judges](#demo-script-for-judges)
@@ -59,13 +62,29 @@ Built for the **Multi-App AI Agent Hackathon**, which requires a multi-step AI a
 
 ---
 
+## Walkthrough video
+
+A narrated, 1 minute 52 second tour of the full agent run, recorded from the real app in Demo Mode:
+landing page → start the agent → prompt injection ignored → Drive, Gmail, Notion and Calendar steps → human approval → completion → application materials → tracker → integrations.
+
+| Watch | Link |
+|---|---|
+| ▶ Stream (Google Drive) | [Open the video](https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing) |
+| ⬇ Download (in this repo) | [`docs/video/InternFlow-AI-walkthrough.mp4`](docs/video/InternFlow-AI-walkthrough.mp4) (9 MB, 1280×800, with voiceover) |
+
+> GitHub READMEs can't embed Google Drive players, so the thumbnail opens the video in Drive.
+
+---
+
 ## Screenshots
 
 | Landing page | Agent run, paused for approval |
 |---|---|
 | <img src="docs/screenshots/landing.png" alt="Landing page" /> | <img src="docs/screenshots/agent-run-approval.png" alt="Live agent timeline waiting for approval" /> |
-| **Application detail (grounded materials)** | **Integrations and Demo Mode** |
-| <img src="docs/screenshots/application-detail.png" alt="Editable cover letter with grounding check" /> | <img src="docs/screenshots/integrations.png" alt="Integrations page" /> |
+| **Application workflow complete** | **Application detail (grounded materials)** |
+| <img src="docs/screenshots/workflow-complete.png" alt="Completed agent run coordinating five apps" /> | <img src="docs/screenshots/application-detail.png" alt="Editable cover letter with grounding check" /> |
+| **Integrations and Demo Mode** | |
+| <img src="docs/screenshots/integrations.png" alt="Integrations page" /> | |
 
 ---
 
@@ -535,13 +554,13 @@ docs/screenshots/            # README screenshots
 npm test
 ```
 
-**Automated:** 10 Vitest tests in [`backend/tests/agent.test.ts`](backend/tests/agent.test.ts).
+**Automated:** 11 Vitest tests in [`backend/tests/agent.test.ts`](backend/tests/agent.test.ts).
 
 | Area | What is verified |
 |---|---|
 | **Agent** | Chooses the correct tools in order. Nothing is written before approval. Completes after approval (match = 86, follow-up saved to the tracker, 5 apps coordinated). |
 | **Branches** | Missing resume · no Gmail history (drafts to the posting's contact) · Google Calendar outage recovery · rejection creates nothing |
-| **Deduplication** | Re-running a job reuses the same application, keeps its match score and doesn't downgrade its status, even while Notion is down |
+| **Deduplication** | Re-running a job reuses the same application and keeps its match score, even while Notion is down. The agent never downgrades a status you set (e.g. "Applied"), including in its final tracker update. |
 | **Claude brain** (scripted client) | Runs model-chosen tools · rejects an unknown tool (`send_all_emails`) · still gates approval · returns all tool results from one turn in a single message |
 | **Security** | Demo prompt injection is flagged and never followed · `dangerous` tools always need approval · invalid URL → 400 · no tool-execution endpoint (404) · unknown approval → 404 |
 
