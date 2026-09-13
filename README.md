@@ -16,6 +16,8 @@ An AI agent that turns an internship posting into a finished application workflo
 
 <img src="docs/screenshots/workflow-complete.png" alt="InternFlow AI — completed agent run coordinating five apps" width="900" />
 
+**[▶ Watch the 2-minute walkthrough video](docs/video/InternFlow-AI-walkthrough.mp4)**
+
 </div>
 
 > **The 20-second pitch.** You give InternFlow a job posting. Instead of just writing a cover letter, it runs the whole workflow:
