@@ -23,7 +23,7 @@ const requestedProvider = str("AI_PROVIDER", "auto").toLowerCase();
 
 export const config = {
   env: str("NODE_ENV", "development"),
-  port: int("PORT", 4000),
+  port: int("API_PORT", 4000),
   appUrl: str("APP_URL", "http://localhost:5173"),
   apiUrl: str("API_URL", "http://localhost:4000"),
 

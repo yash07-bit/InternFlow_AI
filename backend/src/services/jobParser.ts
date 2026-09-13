@@ -223,9 +223,9 @@ function extractCompany(input: ParseJobInput, lines: string[], title: string | u
   }
 
   const hiring = /\b([A-Z][\w&.'-]*(?:\s+[A-Z][\w&.'-]*){0,3})\s+(?:is|are)\s+(?:hiring|looking|seeking)\b/.exec(input.text);
-  if (hiring && !/^(?:We|The|Our)$/.test(hiring[1]!)) return hiring[1];
+  if (hiring && !/^(?:We|The|Our)$/.test(hiring[1]!)) return hiring[1]!.split(/\.(?:\s|$)/)[0];
   const join = /\b(?:join|at)\s+((?:[A-Z][\w&.'-]*)(?:\s+[A-Z][\w&.'-]*){0,3})/.exec(input.text);
-  if (join && !ROLE_WORDS.test(join[1]!) && !/^(?:Our|The|Us)\b/.test(join[1]!)) return join[1];
+  if (join && !ROLE_WORDS.test(join[1]!) && !/^(?:Our|The|Us)\b/.test(join[1]!)) return join[1]!.split(/\.(?:\s|$)/)[0];
 
   if (input.url) {
     try {
