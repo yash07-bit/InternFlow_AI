@@ -77,14 +77,14 @@ export function SkillRows({ skills, names, category }: { skills?: SkillMatch[]; 
 export function JobFacts({ job }: { job: JobData }) {
   const facts = [
     job.location && { icon: MapPin, text: job.location },
-    job.workMode && { icon: Briefcase, text: workModeLabel(job.workMode) },
+    job.workMode && workModeLabel(job.workMode)?.toLowerCase() !== job.location?.trim().toLowerCase() && { icon: Briefcase, text: workModeLabel(job.workMode) },
     job.duration && { icon: Clock, text: job.duration },
     job.deadline && { icon: CalendarClock, text: `Apply by ${formatDate(job.deadline, { year: "numeric" })}` },
   ].filter(Boolean) as { icon: typeof MapPin; text: string }[];
   return (
     <div className="flex flex-wrap gap-x-3 gap-y-1">
-      {facts.map((f) => (
-        <span key={f.text} className="inline-flex items-center gap-1 text-[12.5px] text-ink-3">
+      {facts.map((f, i) => (
+        <span key={`${i}-${f.text}`} className="inline-flex items-center gap-1 text-[12.5px] text-ink-3">
           <f.icon className="size-3.5" /> {f.text}
         </span>
       ))}
@@ -165,6 +165,8 @@ export function MatchScoreCard({ match }: { match: MatchData }) {
 
 export function MatchLists({ match, compact = false }: { match: MatchData; compact?: boolean }) {
   const partial = match.skills.filter((s) => s.status === "partial");
+  // Partial skills already appear under "Potentially relevant" — don't list them twice.
+  const missing = match.gaps.filter((g) => !partial.some((p) => g.toLowerCase().startsWith(p.skill.toLowerCase())));
   return (
     <div className={cn("mt-3.5 grid gap-3.5", !compact && "sm:grid-cols-2")}>
       {match.strengths.length > 0 && (
@@ -195,13 +197,13 @@ export function MatchLists({ match, compact = false }: { match: MatchData; compa
           </div>
         </div>
       )}
-      {match.gaps.length > 0 && (
+      {missing.length > 0 && (
         <div>
           <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] text-rose-700 uppercase">
             <SkillIcon status="missing" className="size-3.5" /> Missing / unclear · Not found
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {match.gaps.map((s) => (
+            {missing.map((s) => (
               <span key={s} className="rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 text-[12px] text-rose-900">
                 {s}
               </span>

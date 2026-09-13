@@ -20,7 +20,7 @@ export function WorkflowStepper({ run }: { run: AgentRun }) {
     <div className="rounded-card border border-line bg-surface px-3 py-3 shadow-card sm:px-4">
       <ol className="flex items-center overflow-x-auto pb-0.5 [scrollbar-width:thin]" aria-label={`Workflow progress: ${doneCount} of ${stages.length} stages done`}>
         {stages.map((stage, i) => (
-          <li key={stage.id} className="flex min-w-0 flex-1 items-center">
+          <li key={stage.id} className="flex flex-none items-center sm:min-w-0 sm:flex-1">
             <div className="flex min-w-[64px] flex-col items-center gap-1.5 px-1" aria-label={`${stage.label}: ${STATE_LABEL[stage.state]}`}>
               <StageDot state={stage.state} index={i + 1} />
               <span
@@ -36,7 +36,7 @@ export function WorkflowStepper({ run }: { run: AgentRun }) {
               </span>
             </div>
             {i < stages.length - 1 && (
-              <div className="relative mx-0.5 mb-5 h-px min-w-3 flex-1 bg-line">
+              <div className="relative mx-0.5 mb-5 h-px w-4 bg-line sm:w-auto sm:min-w-3 sm:flex-1">
                 <div
                   className={cn(
                     "absolute inset-y-0 left-0 bg-accent transition-[width] duration-500",

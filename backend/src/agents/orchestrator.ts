@@ -212,6 +212,7 @@ export class AgentOrchestrator {
     this.emit(live, { type: "tool_started", toolCall: structuredClone(record) });
 
     const ctx = this.context(live);
+    const warningsBefore = live.run.workflow.warnings.length;
     let attempt = 0;
     for (;;) {
       try {
@@ -231,9 +232,9 @@ export class AgentOrchestrator {
         Object.assign(record, { status: "failed", error, completedAt: nowIso() });
         record.durationMs = Date.parse(record.completedAt!) - Date.parse(record.startedAt);
         this.emit(live, { type: "tool_failed", toolCall: structuredClone(record) });
-        if (def.app !== "internflow" && def.name !== "analyze_job") {
-          const reason = /unavailable/i.test(error.message) ? error.message.replace(/\s*\(simulated outage\)\.?$/, ".") : `${APP_LABELS[def.app]} temporarily unavailable: ${error.message}.`;
-          this.warn(live, `${reason} The rest of the application workflow continues — ${def.label.toLowerCase()} can be retried later.`);
+        const toolAlreadyWarned = live.run.workflow.warnings.length > warningsBefore;
+        if (def.app !== "internflow" && def.name !== "analyze_job" && !toolAlreadyWarned) {
+          this.warn(live, failureWarning(APP_LABELS[def.app], def.label, error));
         }
         this.emit(live, { type: "workflow_updated", workflow: structuredClone(live.run.workflow) });
         await this.recordAction(live, record);
@@ -393,4 +394,11 @@ export class AgentOrchestrator {
     if (status === "COMPLETED") this.emit(live, { type: "agent_completed", run: structuredClone(run) });
     else this.emit(live, { type: "agent_failed", run: structuredClone(run), error: text });
   }
+}
+
+function failureWarning(app: string, step: string, error: { code: string; message: string }): string {
+  const message = error.message.replace(/\s*\(simulated outage\)/, "").replace(/\.*$/, ".");
+  if (error.code === "NOT_CONNECTED") return `${message} Skipped ${step.toLowerCase()}; the rest of the workflow continues.`;
+  const reason = /unavailable/i.test(message) ? message : `${app} error: ${message}`;
+  return `${reason} The rest of the application workflow continues — ${step.toLowerCase()} can be retried later.`;
 }

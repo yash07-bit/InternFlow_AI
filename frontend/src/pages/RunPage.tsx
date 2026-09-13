@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AlertTriangle, ArrowRight, CheckCircle2, CircleDashed, Clock, Loader2, RotateCcw, ShieldCheck, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, CircleDashed, Clock, Loader2, RotateCcw, SearchX, ShieldCheck, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import type { AgentRun, Approval, ApprovalAction, CalendarEventPayload, GmailDraftPayload } from "@internflow/shared";
-import { ErrorState, RiskBadge, RunStatusPill } from "@/components/common";
+import { EmptyState, ErrorState, RiskBadge, RunStatusPill } from "@/components/common";
 import { ActivityTimeline, TimelineSkeleton } from "@/components/run/ActivityTimeline";
 import { OrchestrationPanel } from "@/components/run/OrchestrationPanel";
 import { CalendarCard, EmailHistoryCard, FollowUpCard, JobAnalysisCard, MatchScoreCard, MaterialsCard, TrackerCard } from "@/components/run/ResultCards";
@@ -36,7 +36,20 @@ export function RunPage() {
   if (!run) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
-        <ErrorState title={notFound ? "Run not found" : "Couldn't load this run"} message={error ?? undefined} onRetry={() => window.location.reload()} />
+        {notFound ? (
+          <EmptyState
+            icon={SearchX}
+            title="Run not found"
+            description="This agent run doesn't exist or was removed."
+            action={
+              <Button asChild>
+                <Link to="/app">Start a new run</Link>
+              </Button>
+            }
+          />
+        ) : (
+          <ErrorState title="Couldn't load this run" message={error ?? undefined} onRetry={() => window.location.reload()} />
+        )}
       </div>
     );
   }
@@ -67,7 +80,7 @@ export function RunPage() {
       {run.status === "COMPLETED" && <CompletionSummary run={run} />}
       {run.status === "FAILED" && <FailedPanel run={run} />}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] [&>*]:min-w-0">
         <Card className="p-0">
           <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
             <h2 className="text-sm font-semibold">Agent activity</h2>

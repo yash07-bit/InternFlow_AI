@@ -70,7 +70,7 @@ export class LocalBrain implements Brain {
       return { message: "I'll analyze the internship requirements first.", calls: [call("analyze_job", run.input.jobUrl ? { url: run.input.jobUrl } : {})] };
     }
     const job = w.job;
-    if (!job) return { calls: [], fail: `I couldn't analyze that job posting: ${lastCall(run, "analyze_job")?.error?.message ?? "no job details found"}.` };
+    if (!job) return { calls: [], fail: `I couldn't analyze that job posting: ${(lastCall(run, "analyze_job")?.error?.message ?? "no job details found").replace(/\.+$/, "")}.` };
 
     if (!tried("search_drive")) {
       return { message: "I need your resume to determine how well your experience matches this position.", calls: [call("search_drive", { query: "resume" })] };
@@ -151,9 +151,14 @@ function finalSummary(run: AgentRun): string {
   if (w.followUpDraft) parts.push("follow-up draft saved in Gmail");
   if (w.calendarEvent) parts.push("follow-up reminder scheduled");
   let text = parts.join(" · ") + ".";
-  if (!w.resume) text += " I couldn't find a resume in Google Drive — upload one and run again to get a match score and tailored materials.";
-  if (w.approvals.some((a) => a.status === "rejected")) text += " You declined the follow-up actions, so nothing was sent or scheduled.";
-  if (run.toolCalls.some((t) => t.status === "failed")) text += " Some steps need a retry later — see the warnings above.";
+  if (!w.resume) {
+    text += lastCall(run, "search_drive")?.status === "failed"
+      ? " Google Drive wasn't available, so I couldn't read your resume — connect or retry it to get a match score and tailored materials."
+      : " I couldn't find a resume in Google Drive — upload one and run again to get a match score and tailored materials.";
+  }
+  const declined = w.approvals.flatMap((a) => a.actions).filter((a) => a.status === "rejected").map((a) => a.title.toLowerCase());
+  if (declined.length) text += ` You declined: ${declined.join(" and ")}, so ${declined.length > 1 ? "those were" : "that was"} skipped.`;
+  if (run.toolCalls.some((t) => t.status === "failed")) text += " Some steps need a retry later — see the warnings.";
   else if (w.resume) text += " Review the materials, then submit your application.";
   return text;
 }

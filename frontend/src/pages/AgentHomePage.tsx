@@ -124,7 +124,7 @@ export function AgentHomePage() {
         {APP_ORDER.map((id) => {
           const status = integrations?.find((i) => i.id === id)?.status ?? "disconnected";
           return (
-            <Link key={id} to="/app/integrations" className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-line-strong">
+            <Link key={id} to="/app/integrations" aria-label={`${APPS[id].label}: ${INTEGRATION_STATUS[status].label}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-line-strong">
               <AppIcon app={id} size="sm" />
               <div className="min-w-0">
                 <p className="truncate text-[13px] font-medium">{APPS[id].label}</p>

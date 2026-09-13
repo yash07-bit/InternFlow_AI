@@ -66,7 +66,9 @@ async function saveApplication(ctx: ToolContext, patch: Partial<Application>): P
   const w = ctx.run.workflow;
   const job = need(w.job, "Analyze the job first");
   const now = nowIso();
-  const existing = ctx.run.applicationId ? await ctx.store.applications.get(ctx.run.userId, ctx.run.applicationId) : null;
+  const existing = ctx.run.applicationId
+    ? await ctx.store.applications.get(ctx.run.userId, ctx.run.applicationId)
+    : await ctx.store.applications.findByJob(ctx.run.userId, { jobUrl: job.url, company: job.company, role: job.title });
   const app: Application = {
     id: existing?.id ?? newId("app"),
     userId: ctx.run.userId,
@@ -78,12 +80,12 @@ async function saveApplication(ctx: ToolContext, patch: Partial<Application>): P
     jobUrl: job.url,
     location: job.location,
     deadline: job.deadline,
-    matchScore: w.match?.score,
+    matchScore: w.match?.score ?? existing?.matchScore,
     job,
-    match: w.match,
-    materials: w.generatedMaterials,
-    emailContext: w.emailContext,
-    tracker: w.trackerRecord,
+    match: w.match ?? existing?.match,
+    materials: w.generatedMaterials ?? existing?.materials,
+    emailContext: w.emailContext ?? existing?.emailContext,
+    tracker: w.trackerRecord ?? existing?.tracker,
     latestRunId: ctx.run.id,
     ...patch,
     updatedAt: now,

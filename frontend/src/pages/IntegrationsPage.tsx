@@ -69,7 +69,7 @@ export function IntegrationsPage() {
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm font-medium">
-          <Switch checked={!!settings?.demoMode} disabled={updating || !settings} onCheckedChange={(v) => setDemoMode(v)} />
+          <Switch checked={!!settings?.demoMode} disabled={updating || !settings} onCheckedChange={(v) => setDemoMode(v)} aria-label="Demo Mode" />
           Demo Mode
         </label>
       </Card>
@@ -100,7 +100,7 @@ export function IntegrationsPage() {
                       ))}
                     </ul>
                     <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-                      <p className="truncate text-xs text-ink-3">{i.accountLabel ?? (i.configured ? "Credentials configured" : i.authType === "none" ? "No sign-in needed" : "Not configured")}</p>
+                      <p className="truncate text-xs text-ink-3">{i.authType === "none" ? "No sign-in needed" : (i.accountLabel ?? (i.configured ? "Credentials configured" : "Not configured"))}</p>
                       {canConnect &&
                         (i.status === "connected" ? (
                           <Button size="sm" variant="danger" disabled={busy === i.id} onClick={() => act(i, "disconnect")}>

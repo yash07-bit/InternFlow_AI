@@ -33,7 +33,7 @@ export function AppShell() {
 function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-md supports-[backdrop-filter]:bg-canvas/75">
-      <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-2 px-3 sm:gap-4 sm:px-6">
         <Logo to="/app" subtitle />
         <nav aria-label="Primary" className="ml-2 hidden items-center gap-0.5 md:flex">
           {NAV.map((item) => (
@@ -109,7 +109,7 @@ function ConnectedAppsPopover() {
           className="inline-flex h-8 items-center gap-2 rounded-lg border border-line bg-surface px-2.5 text-[13px] font-medium text-ink-2 shadow-card transition-colors hover:border-line-strong hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           aria-label="Connected apps"
         >
-          <span className="flex -space-x-1.5">
+          <span className="hidden -space-x-1.5 sm:flex">
             {APP_ORDER.map((id) => (
               <span key={id} className="rounded-[6px] ring-2 ring-surface">
                 <AppIcon app={id} size="xs" />
@@ -117,6 +117,7 @@ function ConnectedAppsPopover() {
             ))}
           </span>
           <span className="hidden sm:inline">Connected Apps</span>
+          <span className="sm:hidden">Apps</span>
           {integrations && <span className="tabular text-xs text-ink-3">{live}/5</span>}
         </button>
       </PopoverTrigger>
@@ -198,7 +199,7 @@ function DemoModeToggle() {
     >
       <span className="hidden sm:inline">Demo Mode</span>
       <span className="sm:hidden">Demo</span>
-      <span aria-hidden="true" className={cn("size-1.5 rounded-full", checked ? "bg-accent" : "border border-ink-4")} />
+      <span aria-hidden="true" className={cn("hidden size-1.5 rounded-full sm:block", checked ? "bg-accent" : "border border-ink-4")} />
       <Switch checked={checked} disabled={!settings || updating} onCheckedChange={(v) => void onChange(v)} aria-label="Demo Mode" />
     </label>
   );

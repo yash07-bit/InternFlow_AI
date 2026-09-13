@@ -161,7 +161,7 @@ export function composeCoverLetter(input: MaterialsInput): string {
   const expClause = exp?.highlights.map(asClause).find(Boolean);
   if (exp && expClause && input.tone !== "concise") {
     const tie = f.reviewResp ? ", which maps directly to the code review workflow described in the posting" : "";
-    body.push(`As ${article(exp.title)} ${exp.title.toLowerCase()}${exp.organization ? ` (${exp.organization.toLowerCase()})` : ""}, I ${expClause}${tie}.`);
+    body.push(`As ${article(exp.title)} ${exp.title.toLowerCase()}${exp.organization ? ` (${exp.organization})` : ""}, I ${expClause}${tie}.`);
   }
 
   const gaps = input.tone === "concise" ? undefined : gapSentence(f);
@@ -266,6 +266,9 @@ export function composeAnswers(input: MaterialsInput, questions: string[] = DEFA
   });
 }
 
+const locationPhrase = (location?: string) =>
+  !location ? "" : /^remote\b/i.test(location.trim()) ? " (remote)" : ` in ${location}`;
+
 export function composeFollowUpEmail(input: MaterialsInput & { recipientName?: string }): { subject: string; body: string } {
   const f = facts(input);
   const { job, resume, emailContext } = { ...f, emailContext: input.emailContext };
@@ -275,8 +278,8 @@ export function composeFollowUpEmail(input: MaterialsInput & { recipientName?: s
 
   const lastInbound = emailContext?.messages.find((m) => emailContext.recruiter && m.from.email === emailContext.recruiter.email);
   const opening = lastInbound
-    ? `Thank you again for your reply on ${formatShortDate(new Date(lastInbound.date))} about the ${baseSubject ?? job.title}. I've now prepared my application for the ${job.title} role${job.location ? ` in ${job.location}` : ""} and wanted to follow up on this thread.`
-    : `I hope you're doing well. I've prepared my application for the ${job.title} role${job.location ? ` in ${job.location}` : ""} and wanted to reach out to express my interest.`;
+    ? `Thank you again for your reply on ${formatShortDate(new Date(lastInbound.date))} about the ${baseSubject ?? job.title}. I've now prepared my application for the ${job.title} role${locationPhrase(job.location)} and wanted to follow up on this thread.`
+    : `I hope you're doing well. I've prepared my application for the ${job.title} role${locationPhrase(job.location)} and wanted to reach out to express my interest.`;
 
   const projects = f.projects.slice(0, 2).map((p) => p.name);
   const background =
