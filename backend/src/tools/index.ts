@@ -57,6 +57,11 @@ export interface ToolDef<I = any> {
 
 const tool = <I>(def: ToolDef<I>) => def;
 
+/** The agent only moves an application between its own statuses; it never overrides progress the user made (Applied, Interviewing…). */
+const AGENT_STATUSES = new Set(["Preparing", "Ready to apply"]);
+const agentStatus = (current: Application["status"] | undefined, requested: Application["status"]): Application["status"] =>
+  current && !AGENT_STATUSES.has(current) ? current : requested;
+
 const need = <T>(value: T | undefined, message: string): T => {
   if (value === undefined) throw new ToolExecutionError("INVALID_INPUT", message);
   return value;
@@ -324,7 +329,7 @@ export const TOOLS: ToolDef[] = [
         company: job.company,
         role: job.title,
         jobUrl: job.url,
-        status: input.status ?? existing?.status ?? ("Preparing" as const),
+        status: input.status ? agentStatus(existing?.status, input.status) : (existing?.status ?? ("Preparing" as const)),
         matchScore: w.match?.score,
         deadline: job.deadline,
         requirements: [...job.requirements, ...job.preferred],
@@ -360,10 +365,14 @@ export const TOOLS: ToolDef[] = [
     activity: () => "Updating Notion tracker…",
     async execute(input, ctx) {
       const w = ctx.run.workflow;
-      const patch = Object.fromEntries(Object.entries(input).filter(([, v]) => v !== undefined));
+      const patch: Partial<Application> = Object.fromEntries(Object.entries(input).filter(([, v]) => v !== undefined));
+      if (patch.status) {
+        const current = ctx.run.applicationId ? (await ctx.store.applications.get(ctx.run.userId, ctx.run.applicationId))?.status : undefined;
+        patch.status = agentStatus(current, patch.status);
+      }
       if (w.trackerRecord) w.trackerRecord = await ctx.providers.notion.updateApplication(w.trackerRecord.externalId, patch);
       await saveApplication(ctx, patch);
-      const parts = [input.status, input.followUpDate && `follow-up ${input.followUpDate}`].filter(Boolean);
+      const parts = [patch.status, input.followUpDate && `follow-up ${input.followUpDate}`].filter(Boolean);
       return { summary: `Tracker updated${parts.length ? ` — ${parts.join(", ")}` : ""}`, detail: w.trackerRecord, modelResult: w.trackerRecord ?? patch };
     },
   }),

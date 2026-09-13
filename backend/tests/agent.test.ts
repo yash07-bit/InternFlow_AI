@@ -121,11 +121,24 @@ describe("agent workflow (local planner, demo providers)", () => {
 });
 
 describe("tracker deduplication", () => {
+  it("reuses the existing application and never downgrades its status on a re-run", async () => {
+    const orch = new AgentOrchestrator({ store, getProviders });
+    const first = await startDemo(orch);
+    await store.applications.upsert({ ...(await store.applications.get(first.userId, first.applicationId!))!, status: "Applied" });
+    const second = await startDemo(orch); // Notion up → the final update_application_record step runs
+    await orch.reject(second.workflow.approvals[0]!.id);
+    const done = await waitFor(orch, second.id, ["COMPLETED"]);
+    expect(done.toolCalls.some((t) => t.tool === "update_application_record" && t.status === "completed")).toBe(true);
+    expect((await store.applications.get(first.userId, first.applicationId!))!.status).toBe("Applied");
+  });
+
   it("reuses the existing application when the same job is analyzed again, even if Notion is down", async () => {
     const orch = new AgentOrchestrator({ store, getProviders });
     const first = await startDemo(orch);
     await store.applications.upsert({ ...(await store.applications.get(first.userId, first.applicationId!))!, status: "Applied" });
     const second = await startDemo(orch, { jobUrl: DEMO_JOB_URL, options: { simulateFailures: ["notion", "google_drive"] } });
+    await orch.reject(second.workflow.approvals[0]!.id); // lets the agent run its final tracker update
+    await waitFor(orch, second.id, ["COMPLETED"]);
     expect(second.applicationId).toBe(first.applicationId);
     const apps = (await store.applications.list(first.userId)).filter((a) => a.company === "Example AI");
     expect(apps).toHaveLength(1);
