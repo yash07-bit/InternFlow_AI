@@ -1,10 +1,14 @@
 <div align="center">
 
+<img src="frontend/public/favicon.svg" alt="InternFlow AI logo" width="64" />
+
 # InternFlow AI
 
-**One agent. Five apps. One complete internship application workflow.**
+### Your internship applications, orchestrated by AI.
 
-An AI agent that turns an internship posting into a finished application workflow. It coordinates the web, Google Drive, Gmail, Notion and Google Calendar, and asks for your approval before it does anything consequential.
+**One agent · Five apps · One complete workflow**
+
+Paste a job posting. InternFlow reads it, pulls your resume from Google Drive, checks Gmail for recruiter threads, tracks the application in Notion, finds a follow-up slot in Google Calendar, and **pauses for your approval** before it touches anything that matters.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React_19-20232A?logo=react&logoColor=61DAFB)
@@ -14,23 +18,29 @@ An AI agent that turns an internship posting into a finished application workflo
 ![Claude](https://img.shields.io/badge/Claude-tool_calling-D97757)
 ![Tests](https://img.shields.io/badge/tests-11_passing-059669)
 
+[**▶ Watch the walkthrough**](#walkthrough-video) · [**Quick start**](#quick-start) · [**How it works**](#how-it-works) · [**Architecture**](#architecture) · [**Security**](#security--prompt-injection-defense)
+
 <a href="https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing" title="Watch the InternFlow AI walkthrough on Google Drive">
-  <img src="docs/video/walkthrough-thumbnail.png" alt="Play the 2-minute InternFlow AI walkthrough video" width="900" />
+  <img src="docs/video/walkthrough-thumbnail.png" alt="Play the 1:52 InternFlow AI walkthrough video" width="900" />
 </a>
 
-**[▶ Watch the 2-minute walkthrough on Google Drive](https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing)** · [Download the MP4](docs/video/InternFlow-AI-walkthrough.mp4)
+<sub>Click to watch on Google Drive (1:52, with voiceover) · <a href="docs/video/InternFlow-AI-walkthrough.mp4">download the MP4</a> · or run the app and watch it on the landing page with clickable chapters</sub>
 
 </div>
 
-> **The 20-second pitch.** You give InternFlow a job posting. Instead of just writing a cover letter, it runs the whole workflow:
-> - analyzes the job
-> - retrieves your resume from Drive
-> - checks Gmail for past recruiter contact
-> - tracks the application in Notion
-> - finds a follow-up slot in Calendar
-> - **pauses for your approval** before any consequential action
->
-> The AI decides which tools to use, and the UI shows every step live.
+---
+
+## Why InternFlow
+
+Applying for an internship means juggling five tabs: the posting, your resume in Drive, old recruiter emails in Gmail, a tracker in Notion and your calendar. Most "AI for job hunting" tools only write a cover letter. InternFlow runs the **whole workflow as an agent**. It decides the next step, calls a tool in one of your apps, looks at the result and adapts.
+
+| From the recorded demo run | |
+|---|---|
+| **5** apps coordinated | Web · Google Drive · Gmail · Notion · Google Calendar |
+| **13** agent actions | Every one streamed live to a timeline, with app, status, timing and result |
+| **1** human approval | The Gmail draft and calendar reminder wait for Approve / Review / Cancel |
+| **86%** match | Scored skill by skill with evidence from the resume, never invented |
+| **0** context switching | One screen from job posting to application ready |
 
 Built for the **Multi-App AI Agent Hackathon**, which requires a multi-step AI agent connected to at least three external applications. InternFlow connects five.
 
@@ -64,13 +74,29 @@ Built for the **Multi-App AI Agent Hackathon**, which requires a multi-step AI a
 
 ## Walkthrough video
 
-A narrated, 1 minute 52 second tour of the full agent run, recorded from the real app in Demo Mode:
-landing page → start the agent → prompt injection ignored → Drive, Gmail, Notion and Calendar steps → human approval → completion → application materials → tracker → integrations.
+A narrated 1:52 tour of a full agent run, recorded from the real app in Demo Mode.
 
 | Watch | Link |
 |---|---|
-| ▶ Stream (Google Drive) | [Open the video](https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing) |
-| ⬇ Download (in this repo) | [`docs/video/InternFlow-AI-walkthrough.mp4`](docs/video/InternFlow-AI-walkthrough.mp4) (9 MB, 1280×800, with voiceover) |
+| ▶ Stream | [Open on Google Drive](https://drive.google.com/file/d/1gTCJaMEof-7WFWxctitoOtaSdwRPP14Z/view?usp=sharing) |
+| ⬇ Download | [`docs/video/InternFlow-AI-walkthrough.mp4`](docs/video/InternFlow-AI-walkthrough.mp4) (9 MB, 1280×800) |
+| 🖥 In the app | The landing page at http://localhost:5173 embeds the same video with clickable chapters |
+
+**Chapters.** These match the caption cards in the video and the chapter list on the landing page.
+
+| Time | Chapter | What you see |
+|---|---|---|
+| 0:00 | InternFlow AI | Title card |
+| 0:08 | One agent. Five apps. | The landing page |
+| 0:22 | Demo Mode | Every app is ready with realistic mock integrations |
+| 0:30 | Start the agent | The demo job posting goes in and the analysis starts |
+| 0:34 | Untrusted content, ignored | Hidden instructions in the job page are flagged and ignored |
+| 0:46 | The agent coordinates your apps | Drive resume → 86% match → Gmail history → materials → Notion → Calendar |
+| 1:07 | Human-in-the-loop approval | The run pauses. The Gmail draft is reviewed, edited and approved |
+| 1:18 | Workflow complete | 5 apps coordinated, 13 agent actions, 0 context switching |
+| 1:28 | Grounded application materials | Editable cover letter and answers, every claim checked against the resume |
+| 1:37 | Application tracker | Every application is tracked and synced to Notion |
+| 1:40 | Connect real accounts | Integrations page: turn Demo Mode off and connect Google and Notion |
 
 > GitHub READMEs can't embed Google Drive players, so the thumbnail opens the video in Drive.
 
@@ -78,13 +104,15 @@ landing page → start the agent → prompt injection ignored → Drive, Gmail, 
 
 ## Screenshots
 
-| Landing page | Agent run, paused for approval |
+<img src="docs/screenshots/landing.png" alt="Landing page: dark teal hero, embedded walkthrough video with chapter list, and demo run results" />
+
+<p align="center"><sub><b>Landing page.</b> The hero and embedded walkthrough share the video's look. Chapters seek the video, and every product section links to its moment in it.</sub></p>
+
+| Agent run, paused for approval | Application workflow complete |
 |---|---|
-| <img src="docs/screenshots/landing.png" alt="Landing page" /> | <img src="docs/screenshots/agent-run-approval.png" alt="Live agent timeline waiting for approval" /> |
-| **Application workflow complete** | **Application detail (grounded materials)** |
-| <img src="docs/screenshots/workflow-complete.png" alt="Completed agent run coordinating five apps" /> | <img src="docs/screenshots/application-detail.png" alt="Editable cover letter with grounding check" /> |
-| **Integrations and Demo Mode** | |
-| <img src="docs/screenshots/integrations.png" alt="Integrations page" /> | |
+| <img src="docs/screenshots/agent-run-approval.png" alt="Live agent timeline waiting for approval" /> | <img src="docs/screenshots/workflow-complete.png" alt="Completed agent run coordinating five apps" /> |
+| **Application detail (grounded materials)** | **Integrations and Demo Mode** |
+| <img src="docs/screenshots/application-detail.png" alt="Editable cover letter with grounding check" /> | <img src="docs/screenshots/integrations.png" alt="Integrations page" /> |
 
 ---
 
@@ -128,7 +156,7 @@ You don't need a `.env` file, database, API key or OAuth account. The app starts
 
 The demo takes about 3 minutes.
 
-1. Open **http://localhost:5173** and click **Try Demo**. This turns on Demo Mode and opens the agent workspace.
+1. Open **http://localhost:5173**. The landing page embeds the walkthrough, so judges can jump to any chapter first. Click **Try Demo**. This turns on Demo Mode and opens the agent workspace.
 2. Point out the **connected apps** strip: Web · Google Drive · Gmail · Notion · Google Calendar.
 3. Click **Use demo job posting**, then **Start Application Analysis**.
 4. Watch the **Agent activity** timeline while the **App orchestration** nodes light up:
@@ -167,6 +195,7 @@ The demo takes about 3 minutes.
 - **Graceful recovery.** Outages, disconnected apps and blocked URLs never crash the workflow.
 - **Application tracker** with filters, search, inline status edits and Notion links. The detail page has editable materials.
 - **Demo Mode.** Realistic mock providers sit behind the same interfaces as the real integrations, so the demo can't fail because of OAuth.
+- **Landing page built around the walkthrough.** It embeds the video with a chapter list that follows playback, and each section (live run, approval, materials, integrations) has a "watch this" link that seeks to that moment.
 
 ---
 
@@ -539,11 +568,13 @@ backend/src/
 backend/tests/agent.test.ts  # Agent, approval, dedupe, security and API tests
 frontend/src/
   pages/                     # Landing, AgentHome, Run, Applications, ApplicationDetail, Integrations
+  components/landing/        # WalkthroughPlayer: embedded video + chapters synced to playback
   components/run/            # ActivityTimeline, OrchestrationPanel, WorkflowStepper, ResultCards, ToolDetails
   components/ui/             # shadcn-style primitives (Radix + cva)
   hooks/useAgentRun.ts       # SSE subscription + event reducer
   lib/                       # API client, app metadata, workflow derivations, formatting
-docs/screenshots/            # README screenshots
+docs/screenshots/            # README screenshots (also shown on the landing page)
+docs/video/                  # Walkthrough MP4, poster and thumbnail (imported by the landing page via @docs)
 ```
 
 ---

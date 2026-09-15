@@ -10,6 +10,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // The landing page reuses the README's walkthrough video and screenshots.
+      "@docs": fileURLToPath(new URL("../docs", import.meta.url)),
     },
   },
   server: {
